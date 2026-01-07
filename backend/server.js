@@ -8,12 +8,23 @@ dotenv.config();
 const app = express();
 
 // Middleware - CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',                    // Local development
+  'http://localhost:3001',                    // Alternative local port
+  'https://mern-app-chi-two.vercel.app',      // Production frontend on Vercel
+];
+
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
     
-    // Allow localhost for development
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // Allow localhost for development (any port)
     if (origin.startsWith('http://localhost')) {
       return callback(null, true);
     }
@@ -23,10 +34,8 @@ const corsOptions = {
       return callback(null, true);
     }
     
-    // Allow custom domains (you can add your specific Vercel domain here)
-    // Example: if (origin === 'https://your-app.vercel.app') return callback(null, true);
-    
-    callback(null, true); // Allow all origins for now - you can restrict this later
+    // Reject other origins
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
