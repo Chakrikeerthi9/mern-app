@@ -54,6 +54,17 @@ function App() {
     }
   };
 
+  const handleEditTask = async (task, updates) => {
+    try {
+      const updated = await updateTask(task._id || task.id, updates);
+      setTasks((prev) =>
+        prev.map((t) => (t._id === updated._id || t.id === updated.id ? updated : t))
+      );
+    } catch (err) {
+      setError('Failed to edit task');
+    }
+  };
+
   return (
     <div className="app">
       <header>
@@ -69,6 +80,7 @@ function App() {
             tasks={tasks}
             onToggleComplete={handleToggleComplete}
             onDelete={handleDeleteTask}
+            onEdit={handleEditTask}
           />
         )}
       </main>

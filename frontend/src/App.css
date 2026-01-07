@@ -61,11 +61,35 @@ main {
   align-items: center;
   padding: 0.75rem 0;
   border-bottom: 1px solid #e5e7eb;
+  gap: 0.75rem;
+}
+
+.task-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-content strong {
+  word-break: break-word;
 }
 
 .task-list li.completed strong {
   text-decoration: line-through;
   color: #6b7280;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 2px solid #4f46e5;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.task-actions {
+  display: flex;
+  flex-shrink: 0;
 }
 
 .task-actions button {
@@ -74,15 +98,36 @@ main {
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-size: 0.85rem;
+  transition: opacity 0.2s;
 }
 
-.task-actions button:first-of-type {
+.task-actions button:hover {
+  opacity: 0.85;
+}
+
+.task-actions .edit-btn {
+  background: #f59e0b;
+  color: white;
+}
+
+.task-actions .toggle-btn {
   background: #10b981;
   color: white;
 }
 
-.task-actions button:last-of-type {
+.task-actions .delete-btn {
   background: #ef4444;
+  color: white;
+}
+
+.task-actions .save-btn {
+  background: #4f46e5;
+  color: white;
+}
+
+.task-actions .cancel-btn {
+  background: #6b7280;
   color: white;
 }
 
