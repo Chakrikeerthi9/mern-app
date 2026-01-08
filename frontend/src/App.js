@@ -34,11 +34,19 @@ function App() {
 
   const handleToggleComplete = async (task) => {
     try {
-      const updated = await updateTask(task._id || task.id, {
+      const taskId = String(task._id || task.id);
+      const updated = await updateTask(taskId, {
         completed: !task.completed
       });
+      
+      // Use consistent string comparison for IDs
+      const updatedId = String(updated._id || updated.id);
+      
       setTasks((prev) =>
-        prev.map((t) => (t._id === updated._id || t.id === updated.id ? updated : t))
+        prev.map((t) => {
+          const currentId = String(t._id || t.id);
+          return currentId === updatedId ? updated : t;
+        })
       );
     } catch (err) {
       setError('Failed to update task');
@@ -47,8 +55,14 @@ function App() {
 
   const handleDeleteTask = async (task) => {
     try {
-      await deleteTask(task._id || task.id);
-      setTasks((prev) => prev.filter((t) => (t._id || t.id) !== (task._id || task.id)));
+      const taskId = String(task._id || task.id);
+      await deleteTask(taskId);
+      setTasks((prev) => {
+        return prev.filter((t) => {
+          const currentId = String(t._id || t.id);
+          return currentId !== taskId;
+        });
+      });
     } catch (err) {
       setError('Failed to delete task');
     }
@@ -56,9 +70,17 @@ function App() {
 
   const handleEditTask = async (task, updates) => {
     try {
-      const updated = await updateTask(task._id || task.id, updates);
+      const taskId = String(task._id || task.id);
+      const updated = await updateTask(taskId, updates);
+      
+      // Use consistent string comparison for IDs
+      const updatedId = String(updated._id || updated.id);
+      
       setTasks((prev) =>
-        prev.map((t) => (t._id === updated._id || t.id === updated.id ? updated : t))
+        prev.map((t) => {
+          const currentId = String(t._id || t.id);
+          return currentId === updatedId ? updated : t;
+        })
       );
     } catch (err) {
       setError('Failed to edit task');

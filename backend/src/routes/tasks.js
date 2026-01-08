@@ -51,26 +51,32 @@ router.post('/', async (req, res) => {
 // PUT /api/tasks/:id - update a task
 router.put('/:id', async (req, res) => {
   try {
-    const { title, description, completed } = req.body;
-    const update = {};
-
-    if (title !== undefined) update.title = title.trim();
-    if (description !== undefined) update.description = description.trim();
-    if (completed !== undefined) update.completed = !!completed;
-
-    const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      { $set: update },
-      { new: true, runValidators: true }
-    );
-
+    const task = await Task.findById(req.params.id);
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    res.json(task);
-  } catch (err) {
-    res.status(400).json({ message: 'Invalid data or task ID', error: err.message });
+    // Validate title if provided
+    if (req.body.title != null) {
+      const trimmedTitle = req.body.title.trim();
+      if (!trimmedTitle) {
+        return res.status(400).json({ message: 'Title cannot be empty' });
+      }
+      task.title = trimmedTitle;
+    }
+
+    if (req.body.description != null) {
+      task.description = req.body.description ? req.body.description.trim() : '';
+    }
+
+    if (req.body.completed != null) {
+      task.completed = req.body.completed;
+    }
+
+    const updatedTask = await task.save();
+    res.json(updatedTask);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 });
 
